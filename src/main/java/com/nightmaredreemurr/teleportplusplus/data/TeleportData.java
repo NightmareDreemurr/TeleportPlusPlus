@@ -18,6 +18,7 @@ import java.util.UUID;
 public class TeleportData {
     private static final Map<UUID, Map<String, TeleportLocation>> playerHomes = new HashMap<>();
     private static final Map<String, TeleportLocation> warps = new HashMap<>();
+    private static final Map<UUID, TeleportLocation> deathLocations = new HashMap<>();
     private static TeleportLocation spawn = null;
 
     public static class TeleportLocation {
@@ -95,5 +96,18 @@ public class TeleportData {
 
     public static TeleportLocation getSpawn() {
         return spawn;
+    }
+
+    // Death location management
+    public static void setDeathLocation(UUID playerId, TeleportLocation location) {
+        deathLocations.put(playerId, location);
+    }
+
+    public static TeleportLocation getDeathLocation(UUID playerId) {
+        return deathLocations.get(playerId);
+    }
+
+    public static void clearDeathLocation(UUID playerId) {
+        deathLocations.remove(playerId);
     }
 }
