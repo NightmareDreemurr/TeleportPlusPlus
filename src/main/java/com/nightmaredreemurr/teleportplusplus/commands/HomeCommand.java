@@ -68,9 +68,14 @@ public class HomeCommand {
             player.level().dimension()
         );
 
-        TeleportData.setHome(player.getUUID(), homeName, location);
-        player.sendSystemMessage(Component.literal("§aHome '" + homeName + "' set at current location"));
-        return 1;
+        boolean success = TeleportData.setHome(player.getUUID(), homeName, location);
+        if (success) {
+            player.sendSystemMessage(Component.literal("§aHome '" + homeName + "' set at current location"));
+            return 1;
+        } else {
+            player.sendSystemMessage(Component.literal("§cYou have reached the maximum number of homes!"));
+            return 0;
+        }
     }
 
     private static int deleteHome(CommandContext<CommandSourceStack> context, String homeName) {

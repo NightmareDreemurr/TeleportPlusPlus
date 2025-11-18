@@ -1,0 +1,15 @@
+TeleportPlusPlus
+Copyright (c) 2024 NightmareDreemurr
+
+This mod is inspired by the functionality of EssentialsX (https://github.com/EssentialsX/Essentials),
+a popular Bukkit/Spigot plugin licensed under GPLv3.
+
+TeleportPlusPlus is a fresh implementation for NeoForge, bringing similar teleportation 
+features to the NeoForge platform. This is not a fork or derivative of the EssentialsX 
+codebase, but rather a new implementation inspired by its feature set.
+
+EssentialsX Copyright Notice:
+    EssentialsX is Copyright (c) 2019 EssentialsX contributors
+    Original Essentials is Copyright (c) 2011 Essentials Team
+
+Both projects are licensed under the GNU General Public License v3.0.

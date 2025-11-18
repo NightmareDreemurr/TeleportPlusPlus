@@ -1,5 +1,6 @@
 package com.nightmaredreemurr.teleportplusplus.data;
 
+import com.nightmaredreemurr.teleportplusplus.config.TeleportConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -10,6 +11,9 @@ import java.util.UUID;
 
 /**
  * Manages teleportation data for players including homes, warps, and spawn points
+ * 
+ * This class provides in-memory storage for teleportation data.
+ * Future enhancements could add persistent storage to save data between server restarts.
  */
 public class TeleportData {
     private static final Map<UUID, Map<String, TeleportLocation>> playerHomes = new HashMap<>();
@@ -39,8 +43,16 @@ public class TeleportData {
     }
 
     // Home management
-    public static void setHome(UUID playerId, String name, TeleportLocation location) {
-        playerHomes.computeIfAbsent(playerId, k -> new HashMap<>()).put(name, location);
+    public static boolean setHome(UUID playerId, String name, TeleportLocation location) {
+        Map<String, TeleportLocation> homes = playerHomes.computeIfAbsent(playerId, k -> new HashMap<>());
+        
+        // Check if player has reached max homes limit (unless they're replacing an existing home)
+        if (!homes.containsKey(name) && homes.size() >= TeleportConfig.maxHomes) {
+            return false;
+        }
+        
+        homes.put(name, location);
+        return true;
     }
 
     public static TeleportLocation getHome(UUID playerId, String name) {
