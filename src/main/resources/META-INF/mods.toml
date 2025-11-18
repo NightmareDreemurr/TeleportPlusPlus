@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="GPL-3.0"
+
+[[mods]]
+modId="teleportplusplus"
+version="${file.jarVersion}"
+displayName="TeleportPlusPlus"
+description='''
+A comprehensive teleportation mod for NeoForge with features inspired by EssentialsX.
+Includes home management, spawn points, teleport requests, and warps.
+'''
+authors="NightmareDreemurr"
+displayURL="https://github.com/NightmareDreemurr/TeleportPlusPlus"
+
+[[dependencies.teleportplusplus]]
+modId="neoforge"
+type="required"
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.teleportplusplus]]
+modId="minecraft"
+type="required"
+versionRange="[1.21,)"
+ordering="NONE"
+side="BOTH"
