@@ -27,33 +27,41 @@ public class SpawnCommand {
     }
 
     private static int teleportSpawn(CommandContext<CommandSourceStack> context) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportLocation location = TeleportData.getSpawn();
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportLocation location = TeleportData.getSpawn();
 
-        if (location == null) {
-            player.sendSystemMessage(Component.literal("§cSpawn point not set! Use /setspawn to set it."));
+            if (location == null) {
+                player.sendSystemMessage(Component.literal("§cSpawn point not set! Use /setspawn to set it."));
+                return 0;
+            }
+
+            player.teleportTo(
+                player.getServer().getLevel(location.dimension),
+                location.x, location.y, location.z,
+                location.yaw, location.pitch
+            );
+            player.sendSystemMessage(Component.literal("§aTeleported to spawn"));
+            return 1;
+        } catch (Exception e) {
             return 0;
         }
-
-        player.teleportTo(
-            player.getServer().getLevel(location.dimension),
-            location.x, location.y, location.z,
-            location.yaw, location.pitch
-        );
-        player.sendSystemMessage(Component.literal("§aTeleported to spawn"));
-        return 1;
     }
 
     private static int setSpawn(CommandContext<CommandSourceStack> context) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportLocation location = new TeleportLocation(
-            player.getX(), player.getY(), player.getZ(),
-            player.getYRot(), player.getXRot(),
-            player.level().dimension()
-        );
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportLocation location = new TeleportLocation(
+                player.getX(), player.getY(), player.getZ(),
+                player.getYRot(), player.getXRot(),
+                player.level().dimension()
+            );
 
-        TeleportData.setSpawn(location);
-        player.sendSystemMessage(Component.literal("§aSpawn point set at current location"));
-        return 1;
+            TeleportData.setSpawn(location);
+            player.sendSystemMessage(Component.literal("§aSpawn point set at current location"));
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

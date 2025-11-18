@@ -41,53 +41,69 @@ public class WarpCommand {
     }
 
     private static int teleportWarp(CommandContext<CommandSourceStack> context, String warpName) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportLocation location = TeleportData.getWarp(warpName);
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportLocation location = TeleportData.getWarp(warpName);
 
-        if (location == null) {
-            player.sendSystemMessage(Component.literal("§cWarp '" + warpName + "' not found!"));
+            if (location == null) {
+                player.sendSystemMessage(Component.literal("§cWarp '" + warpName + "' not found!"));
+                return 0;
+            }
+
+            player.teleportTo(
+                player.getServer().getLevel(location.dimension),
+                location.x, location.y, location.z,
+                location.yaw, location.pitch
+            );
+            player.sendSystemMessage(Component.literal("§aTeleported to warp '" + warpName + "'"));
+            return 1;
+        } catch (Exception e) {
             return 0;
         }
-
-        player.teleportTo(
-            player.getServer().getLevel(location.dimension),
-            location.x, location.y, location.z,
-            location.yaw, location.pitch
-        );
-        player.sendSystemMessage(Component.literal("§aTeleported to warp '" + warpName + "'"));
-        return 1;
     }
 
     private static int setWarp(CommandContext<CommandSourceStack> context, String warpName) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportLocation location = new TeleportLocation(
-            player.getX(), player.getY(), player.getZ(),
-            player.getYRot(), player.getXRot(),
-            player.level().dimension()
-        );
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportLocation location = new TeleportLocation(
+                player.getX(), player.getY(), player.getZ(),
+                player.getYRot(), player.getXRot(),
+                player.level().dimension()
+            );
 
-        TeleportData.setWarp(warpName, location);
-        player.sendSystemMessage(Component.literal("§aWarp '" + warpName + "' set at current location"));
-        return 1;
+            TeleportData.setWarp(warpName, location);
+            player.sendSystemMessage(Component.literal("§aWarp '" + warpName + "' set at current location"));
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private static int deleteWarp(CommandContext<CommandSourceStack> context, String warpName) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportData.deleteWarp(warpName);
-        player.sendSystemMessage(Component.literal("§aWarp '" + warpName + "' deleted"));
-        return 1;
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportData.deleteWarp(warpName);
+            player.sendSystemMessage(Component.literal("§aWarp '" + warpName + "' deleted"));
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private static int listWarps(CommandContext<CommandSourceStack> context) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        var warps = TeleportData.getWarps();
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            var warps = TeleportData.getWarps();
 
-        if (warps.isEmpty()) {
-            player.sendSystemMessage(Component.literal("§cNo warps available"));
+            if (warps.isEmpty()) {
+                player.sendSystemMessage(Component.literal("§cNo warps available"));
+                return 0;
+            }
+
+            player.sendSystemMessage(Component.literal("§aAvailable warps: §f" + String.join(", ", warps.keySet())));
+            return 1;
+        } catch (Exception e) {
             return 0;
         }
-
-        player.sendSystemMessage(Component.literal("§aAvailable warps: §f" + String.join(", ", warps.keySet())));
-        return 1;
     }
 }
