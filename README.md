@@ -27,6 +27,9 @@ TeleportPlusPlus provides essential teleportation commands for Minecraft servers
 - `/delwarp <name>` - Delete a warp (requires operator)
 - `/warps` - List all available warps
 
+### Death Recovery
+- `/back` - Return to your last death location
+
 ## Installation
 
 1. Download the latest release from the [Releases](https://github.com/NightmareDreemurr/TeleportPlusPlus/releases) page
