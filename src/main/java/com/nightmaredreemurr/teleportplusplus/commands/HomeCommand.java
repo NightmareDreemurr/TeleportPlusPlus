@@ -43,58 +43,74 @@ public class HomeCommand {
     }
 
     private static int teleportHome(CommandContext<CommandSourceStack> context, String homeName) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportLocation location = TeleportData.getHome(player.getUUID(), homeName);
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportLocation location = TeleportData.getHome(player.getUUID(), homeName);
 
-        if (location == null) {
-            player.sendSystemMessage(Component.literal("§cHome '" + homeName + "' not found!"));
+            if (location == null) {
+                player.sendSystemMessage(Component.literal("§cHome '" + homeName + "' not found!"));
+                return 0;
+            }
+
+            player.teleportTo(
+                player.getServer().getLevel(location.dimension),
+                location.x, location.y, location.z,
+                location.yaw, location.pitch
+            );
+            player.sendSystemMessage(Component.literal("§aTeleported to home '" + homeName + "'"));
+            return 1;
+        } catch (Exception e) {
             return 0;
         }
-
-        player.teleportTo(
-            player.getServer().getLevel(location.dimension),
-            location.x, location.y, location.z,
-            location.yaw, location.pitch
-        );
-        player.sendSystemMessage(Component.literal("§aTeleported to home '" + homeName + "'"));
-        return 1;
     }
 
     private static int setHome(CommandContext<CommandSourceStack> context, String homeName) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportLocation location = new TeleportLocation(
-            player.getX(), player.getY(), player.getZ(),
-            player.getYRot(), player.getXRot(),
-            player.level().dimension()
-        );
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportLocation location = new TeleportLocation(
+                player.getX(), player.getY(), player.getZ(),
+                player.getYRot(), player.getXRot(),
+                player.level().dimension()
+            );
 
-        boolean success = TeleportData.setHome(player.getUUID(), homeName, location);
-        if (success) {
-            player.sendSystemMessage(Component.literal("§aHome '" + homeName + "' set at current location"));
-            return 1;
-        } else {
-            player.sendSystemMessage(Component.literal("§cYou have reached the maximum number of homes!"));
+            boolean success = TeleportData.setHome(player.getUUID(), homeName, location);
+            if (success) {
+                player.sendSystemMessage(Component.literal("§aHome '" + homeName + "' set at current location"));
+                return 1;
+            } else {
+                player.sendSystemMessage(Component.literal("§cYou have reached the maximum number of homes!"));
+                return 0;
+            }
+        } catch (Exception e) {
             return 0;
         }
     }
 
     private static int deleteHome(CommandContext<CommandSourceStack> context, String homeName) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        TeleportData.deleteHome(player.getUUID(), homeName);
-        player.sendSystemMessage(Component.literal("§aHome '" + homeName + "' deleted"));
-        return 1;
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            TeleportData.deleteHome(player.getUUID(), homeName);
+            player.sendSystemMessage(Component.literal("§aHome '" + homeName + "' deleted"));
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private static int listHomes(CommandContext<CommandSourceStack> context) {
-        ServerPlayer player = context.getSource().getPlayerOrException();
-        var homes = TeleportData.getHomes(player.getUUID());
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            var homes = TeleportData.getHomes(player.getUUID());
 
-        if (homes.isEmpty()) {
-            player.sendSystemMessage(Component.literal("§cYou have no homes set"));
+            if (homes.isEmpty()) {
+                player.sendSystemMessage(Component.literal("§cYou have no homes set"));
+                return 0;
+            }
+
+            player.sendSystemMessage(Component.literal("§aYour homes: §f" + String.join(", ", homes.keySet())));
+            return 1;
+        } catch (Exception e) {
             return 0;
         }
-
-        player.sendSystemMessage(Component.literal("§aYour homes: §f" + String.join(", ", homes.keySet())));
-        return 1;
     }
 }
